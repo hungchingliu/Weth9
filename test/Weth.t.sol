@@ -4,12 +4,11 @@ pragma solidity ^0.8.13;
 import "../src/Weth.sol";
 import "forge-std/Test.sol";
 
-contract WethTest is Test{
+contract WethTest is Test {
+    event Deposit(address indexed from, uint256 amount);
+    event Withdraw(address indexed to, uint256 amount);
+    event Transfer(address indexed from, address indexed to, uint256 amount);
 
-    event Deposit(address indexed from, uint amount);
-    event Withdraw(address indexed to , uint amount);
-    event Transfer(address indexed from, address indexed to, uint amount);
-    
     Weth public weth;
     address user1 = address(1);
     address user2 = address(2);
@@ -32,7 +31,7 @@ contract WethTest is Test{
 
         vm.prank(user1);
         weth.deposit{value: depositAmount}();
-        assertEq(weth.balanceOf(user1),  depositAmount);
+        assertEq(weth.balanceOf(user1), depositAmount);
     }
 
     function testDepositTransferEthToContract() public {
@@ -74,7 +73,6 @@ contract WethTest is Test{
         vm.prank(user1);
         weth.withdraw(depositAmount);
         assertEq(weth.totalSupply(), 0 ether);
-
     }
 
     function testWithdrawSendEthToSender() public {
@@ -86,12 +84,11 @@ contract WethTest is Test{
 
         vm.prank(user1);
         weth.deposit{value: depositAmount}();
-        
+
         assertEq(user1.balance, 0);
         vm.prank(user1);
         weth.withdraw(depositAmount);
         assertEq(user1.balance, depositAmount);
-        
     }
 
     function testWithdrawEmitWithdrawEvent() public {
@@ -102,7 +99,7 @@ contract WethTest is Test{
 
         vm.prank(user1);
         weth.deposit{value: depositAmount}();
-        
+
         vm.expectEmit(true, false, false, true);
         emit Withdraw(user1, depositAmount);
         vm.prank(user1);
@@ -140,7 +137,7 @@ contract WethTest is Test{
 
     function testTransferFromCanUseAllowance() public {
         // 1. deposit 1 ether to user1 WETH account
-        // 2. appove user2 to spend 1 WETH 
+        // 2. appove user2 to spend 1 WETH
         // 3. transferFrom 1 WETH from user1 to user2
         uint256 depositAmount = 1 ether;
         uint256 approveAmount = 1 ether;
@@ -160,12 +157,11 @@ contract WethTest is Test{
 
     function testDeductAllowanceAfterTransferFrom() public {
         // 1. deposit 1 ether to user1 WETH account
-        // 2. appove user2 to spend 1 WETH 
+        // 2. appove user2 to spend 1 WETH
         // 3. transferFrom 1 WETH from user1 to user2
         uint256 depositAmount = 1 ether;
         uint256 approveAmount = 1 ether;
         uint256 transferAmount = 1 ether;
-
 
         vm.prank(user1);
         weth.deposit{value: depositAmount}();
@@ -186,7 +182,7 @@ contract WethTest is Test{
 
         vm.expectEmit(true, true, false, true);
         emit Transfer(user1, user2, transferAmount);
-        
+
         vm.prank(user1);
         weth.transfer(user2, transferAmount);
     }
@@ -208,12 +204,11 @@ contract WethTest is Test{
         // 4. assert contract receive 1 ether
         uint256 depositAmount = 1 ether;
 
-
         vm.expectEmit(true, false, false, true);
         emit Deposit(user1, depositAmount);
 
         vm.prank(user1);
-        (bool success, ) = address(weth).call{value: depositAmount}("");
+        (bool success,) = address(weth).call{value: depositAmount}("");
 
         assertTrue(success);
         assertEq(weth.balanceOf(user1), depositAmount);
@@ -227,8 +222,7 @@ contract WethTest is Test{
         uint256 callValue = 1 ether;
 
         vm.prank(user1);
-        (bool success, ) = address(weth).call{value: callValue}("0xAA");
+        (bool success,) = address(weth).call{value: callValue}("0xAA");
         assertEq(success, false);
     }
-
 }
