@@ -52,7 +52,7 @@ contract WethTest is Test {
         // 3. call weth.deposit(1 ether);
         uint256 depositAmount = 1 ether;
 
-        vm.expectEmit(true, false, false, true);
+        vm.expectEmit();
         emit Deposit(user1, depositAmount);
 
         vm.prank(user1);
@@ -100,7 +100,7 @@ contract WethTest is Test {
         vm.prank(user1);
         weth.deposit{value: depositAmount}();
 
-        vm.expectEmit(true, false, false, true);
+        vm.expectEmit();
         emit Withdraw(user1, depositAmount);
         vm.prank(user1);
         weth.withdraw(depositAmount);
@@ -180,7 +180,7 @@ contract WethTest is Test {
         // 2. pretend we are user 1 and call transfer with 0 value
         uint256 transferAmount = 0;
 
-        vm.expectEmit(true, true, false, true);
+        vm.expectEmit();
         emit Transfer(user1, user2, transferAmount);
 
         vm.prank(user1);
@@ -204,7 +204,7 @@ contract WethTest is Test {
         // 4. assert contract receive 1 ether
         uint256 depositAmount = 1 ether;
 
-        vm.expectEmit(true, false, false, true);
+        vm.expectEmit();
         emit Deposit(user1, depositAmount);
 
         vm.prank(user1);
