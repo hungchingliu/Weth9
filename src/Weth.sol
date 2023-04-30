@@ -45,6 +45,7 @@ contract Weth is IWETH9, IERC20 {
     }
 
     function transfer(address recipient, uint amount) external returns (bool) {
+        require(balanceOf[msg.sender] >= amount, "insufficient balance");
         balanceOf[msg.sender] -= amount;
         balanceOf[recipient] += amount;
         emit Transfer(msg.sender, recipient, amount);
@@ -62,6 +63,8 @@ contract Weth is IWETH9, IERC20 {
         address recipient,
         uint amount
     ) external returns (bool) {
+        require(allowance[sender][msg.sender] >= amount, "insufficient allowance");
+        require(balanceOf[sender] >= amount, "insufficient balance");
         allowance[sender][msg.sender] -= amount;
         balanceOf[sender] -= amount;
         balanceOf[recipient] += amount;
@@ -76,10 +79,10 @@ contract Weth is IWETH9, IERC20 {
     }
 
     function withdraw(uint256 _amount) external {
-        require(balanceOf[msg.sender] >= _amount);
+        require(balanceOf[msg.sender] >= _amount, "insufficient balance");
         balanceOf[msg.sender] -= _amount;
         (bool success, ) = payable(msg.sender).call{value: _amount}("");
-        require(success);
+        require(success, "sender call failure");
         emit Transfer(msg.sender, address(0x0), _amount);
         emit Withdraw(msg.sender, _amount);
     }
