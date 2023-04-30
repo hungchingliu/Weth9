@@ -53,7 +53,7 @@ contract WethTest is Test{
         // 3. call weth.deposit(1 ether);
         uint256 depositAmount = 1 ether;
 
-        vm.expectEmit(true, false, true, true);
+        vm.expectEmit(true, false, false, true);
         emit Deposit(user1, depositAmount);
 
         vm.prank(user1);
