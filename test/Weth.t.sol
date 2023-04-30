@@ -23,7 +23,7 @@ contract WethTest is Test {
         vm.deal(user2, initialBalance);
     }
 
-    function testDepositMintTokenToSender() public {
+    function test_DepositMintTokenToSender() public {
         // 1. pretend we are user1
         // 2. call weth.deposit(1 ether);
         // 3. assert weth.balanceOf(user1) == 1 ether
@@ -34,7 +34,7 @@ contract WethTest is Test {
         assertEq(weth.balanceOf(user1), depositAmount);
     }
 
-    function testDepositTransferEthToContract() public {
+    function test_DepositTransferEthToContract() public {
         // 1. pretend we are user 1
         // 2. call weth.deposit(1 ether);
         // 3. assert WETH contract receive ethers
@@ -46,7 +46,7 @@ contract WethTest is Test {
         assertEq(address(weth).balance, depositAmount);
     }
 
-    function testDespositEmitDepositEvent() public {
+    function test_DespositEmitDepositEvent() public {
         // 1. declare Deposit event we expect to emit
         // 2. pretend we are user1
         // 3. call weth.deposit(1 ether);
@@ -59,7 +59,7 @@ contract WethTest is Test {
         weth.deposit{value: depositAmount}();
     }
 
-    function testWithdrawBurnTokens() public {
+    function test_WithdrawBurnTokens() public {
         // 1. deposit 1 ether to user1 WETH account
         // 2. assert weth.totalSupply = 1 ether
         // 3. call weth.withdraw(_amount);
@@ -75,7 +75,7 @@ contract WethTest is Test {
         assertEq(weth.totalSupply(), 0 ether);
     }
 
-    function testWithdrawSendEthToSender() public {
+    function test_WithdrawSendEthToSender() public {
         // 1. deposit 1 ether to user1 WETH account
         // 2. assert user1.balance == 0
         // 3. call weth.withdraw(1 ether)
@@ -91,7 +91,7 @@ contract WethTest is Test {
         assertEq(user1.balance, depositAmount);
     }
 
-    function testWithdrawEmitWithdrawEvent() public {
+    function test_WithdrawEmitWithdrawEvent() public {
         // 1. deposit 1 ether to user1 WETH account
         // 2. declare Withdraw event we expect to emit
         // 3. call weth.withdraw(1 ether);
@@ -106,7 +106,7 @@ contract WethTest is Test {
         weth.withdraw(depositAmount);
     }
 
-    function testTransferSendTokenToReceiver() public {
+    function test_TransferSendTokenToReceiver() public {
         // 1. deposit 1 ether to user1 WETH account
         // 2. call weth.transfer(user2, 1 ether);
         // 3. assert weth.balanceOf(user1) == 0
@@ -124,7 +124,7 @@ contract WethTest is Test {
         assertEq(weth.balanceOf(user2), transferAmount);
     }
 
-    function testApproveSetAllowance() public {
+    function test_ApproveSetAllowance() public {
         // 1. call weth.approve();
         // 2. assert allowance has been set
         uint256 approveAmount = 1 ether;
@@ -135,7 +135,7 @@ contract WethTest is Test {
         assertEq(weth.allowance(user1, user2), approveAmount);
     }
 
-    function testTransferFromCanUseAllowance() public {
+    function test_TransferFromCanUseAllowance() public {
         // 1. deposit 1 ether to user1 WETH account
         // 2. appove user2 to spend 1 WETH
         // 3. transferFrom 1 WETH from user1 to user2
@@ -155,7 +155,7 @@ contract WethTest is Test {
         assertEq(weth.balanceOf(user2), transferAmount);
     }
 
-    function testDeductAllowanceAfterTransferFrom() public {
+    function test_DeductAllowanceAfterTransferFrom() public {
         // 1. deposit 1 ether to user1 WETH account
         // 2. appove user2 to spend 1 WETH
         // 3. transferFrom 1 WETH from user1 to user2
@@ -175,7 +175,7 @@ contract WethTest is Test {
         assertEq(weth.allowance(user1, user2), 0);
     }
 
-    function testValue0TransferEmitTransferEvent() public {
+    function test_Value0TransferEmitTransferEvent() public {
         // 1. declare Transfer event we expect to emit
         // 2. pretend we are user 1 and call transfer with 0 value
         uint256 transferAmount = 0;
@@ -187,7 +187,7 @@ contract WethTest is Test {
         weth.transfer(user2, transferAmount);
     }
 
-    function testTransferNotEnoughBalanceShouldRevert() public {
+    function test_RevertIf_TransferNotEnoughBalance() public {
         // 1. declare expect to revert on next call
         // 2. pretend we are user1 and call transfer with no balance in WETH
         uint256 transferAmount = 1 ether;
@@ -197,7 +197,7 @@ contract WethTest is Test {
         weth.transfer(user2, transferAmount);
     }
 
-    function testReceiveBehavelikeDeposit() public {
+    function test_ReceiveBehavelikeDeposit() public {
         // 1. declare Deposit event we expect to emit
         // 2. pretend we are user1, perform low level call with value = 1 ether
         // 3. assert balanceOf(user1)
@@ -216,7 +216,7 @@ contract WethTest is Test {
         assertEq(weth.totalSupply(), depositAmount);
     }
 
-    function testLowLevelCallWithNoFallBackShouldRevert() public {
+    function test_RevertIf_LowLevelCallWithNoFallBack() public {
         // We haven't implement fallback in Weth,
         // so low level call with data should revert
         uint256 callValue = 1 ether;
